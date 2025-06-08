@@ -43,7 +43,8 @@
     "recharts": "2.15.3",
     "socket.io-client": "^4.7.5",
     "tailwindcss": "4.1.8",
-    "three": "0.177.0"
+    "three": "0.177.0",
+    "vercel": "42.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
