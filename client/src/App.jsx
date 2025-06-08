@@ -11,7 +11,7 @@ import DeviceDetailsPage from './components/admin/DeviceDetailPage/DeviceDetails
 import Records from './components/admin/DeviceDetailPage/Records';
 import Download from './components/admin/DeviceDetailPage/Download';
 import MoreDetails from './components/admin/DeviceDetailPage/MoreDetails';
-import Realtime from './components/admin/DeviceDetailPage/Realtime';
+// import Realtime from './components/admin/DeviceDetailPage/Realtime';
 import IntroPage from './components/Intro';
 import IoTGatewayHealthPage from './components/admin/DeviceDetailPage/IoTGatewayHealthPage'; 
 
@@ -61,7 +61,7 @@ const App = () => {
         <Route path="/admin/device-detail/:deviceId" element={<ProtectedRoute requireAdmin={true}><DeviceDetailsPage /></ProtectedRoute>} />
         <Route path="/admin/device-detail/:deviceId/records" element={<ProtectedRoute requireAdmin={true}><Records /></ProtectedRoute>} />
         <Route path="/admin/device-detail/:deviceId/download-csv" element={<ProtectedRoute requireAdmin={true}><Download /></ProtectedRoute>} />
-        <Route path="/admin/device-detail/:deviceId/realtime" element={<ProtectedRoute requireAdmin={true}><Realtime /></ProtectedRoute>} />
+        {/* <Route path="/admin/device-detail/:deviceId/realtime" element={<ProtectedRoute requireAdmin={true}><Realtime /></ProtectedRoute>} /> */}
         <Route path="/admin/device-detail/:deviceId/more-details" element={<ProtectedRoute requireAdmin={true}><MoreDetails /></ProtectedRoute>} />
         <Route path="/admin/device-detail/:deviceId/health" element={<ProtectedRoute requireAdmin={true}><IoTGatewayHealthPage /></ProtectedRoute>} />
 
