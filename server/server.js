@@ -12,7 +12,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ['https://waterquality-five.vercel.app'],
+    origin: ['http://localhost:5173'],
     methods: ['GET', 'POST'],
   }, 
 });
@@ -27,7 +27,7 @@ console.log('adminRoutes type:', typeof adminRoutes);
 
 
 app.use('/api/user', userRoutes);
-app.use('/api/admin', adminRoutes);
+app.use('/api/admin', adminRoutes); 
 
 
 io.on('connection', (socket) => {

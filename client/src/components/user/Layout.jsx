@@ -12,7 +12,7 @@ import { CSVLink } from 'react-csv';
 import io from 'socket.io-client';
 
 const MAX_ALERTS_IN_DROPDOWN = 7;
-const socket = io(`${import.meta.env.VITE_API_URL}`); // Use backend port
+const socket = io(`${import.meta.env.VITE_API_URL}`);
 
 const Layout = () => {
   const navigate = useNavigate();
@@ -59,7 +59,7 @@ const Layout = () => {
 
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/profile`, { // Correct endpoint
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/profile`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUsername(response.data.username || 'Demo User');
@@ -80,7 +80,6 @@ const Layout = () => {
         const userIdFromToken = decodedToken.userId || decodedToken.id;
         if (data.userId !== userIdFromToken) return;
 
-        // Generate alerts for out-of-range values
         const newAlerts = [];
         if (data.ph < 6.5 || data.ph > 7.5) {
           newAlerts.push({
@@ -237,29 +236,27 @@ const Layout = () => {
       {/* Main Content */}
       <div className={`flex-1 flex flex-col transition-all duration-300 ${mainContentMarginClass}`}>
         <header
-          className={`sticky top-0 z-30 h-16 flex items-center justify-between px-6 shadow-sm ${
-            isDarkMode ? 'bg-slate-800/80 backdrop-blur-md border-b border-slate-700' : 'bg-white/80 backdrop-blur-md border-b border-slate-200'
-          }`}
+          className={`fixed top-4 left-4 right-4 bg-black/70 backdrop-blur-md text-white px-4 py-3 rounded-lg z-50 flex items-center justify-between`}
         >
           <div className='flex items-center'>
             <button
-              className='lg:hidden p-2 rounded-md text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none mr-3'
+              className='lg:hidden p-2 rounded-md hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white'
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               title={isSidebarOpen ? 'Close menu' : 'Open menu'}
             >
               {isSidebarOpen ? <FaTimes className='h-5 w-5' /> : <FaBars className='h-5 w-5' />}
             </button>
             <div className='flex items-center lg:hidden'>
-              <FaTint className='text-sky-600 text-2xl' />
-              <h1 className='ml-2 text-lg font-bold text-sky-600 dark:text-sky-500'>AquaMonitor</h1>
+              <FaTint className='text-cyan-500 text-2xl' />
+              <h1 className='ml-2 text-lg font-semibold text-cyan-500'>AquaMonitor</h1>
             </div>
           </div>
 
-          <div className='flex items-center space-x-3 sm:space-x-4'>
+          <div className='flex items-center gap-2 sm:gap-4'>
             <div className='relative'>
               <button
                 title='Notifications'
-                className={`p-2 rounded-full relative hover:bg-slate-200 dark:hover:bg-slate-700 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}
+                className='p-2 rounded-md hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white'
                 onClick={() => {
                   setIsNotificationDropdownOpen(!isNotificationDropdownOpen);
                   if (!isNotificationDropdownOpen) markAlertsAsRead();
@@ -272,21 +269,21 @@ const Layout = () => {
                 )}
               </button>
               {isNotificationDropdownOpen && (
-                <div className={`absolute right-0 mt-2.5 w-80 sm:w-96 rounded-lg shadow-xl p-2 z-50 border ${isDarkMode ? 'bg-slate-800 text-slate-200 border-slate-700' : 'bg-white text-slate-700 border-slate-200'}`}>
-                  <div className='flex justify-between items-center px-2 py-2 border-b dark:border-slate-700'>
+                <div className={`absolute right-0 mt-2.5 w-80 sm:w-96 rounded-lg shadow-xl p-2 z-50 border ${isDarkMode ? 'bg-black/90 border-slate-700 text-white' : 'bg-white/90 border-slate-200 text-slate-700'}`}>
+                  <div className='flex justify-between items-center px-2 py-2 border-b border-white/20 dark:border-slate-700'>
                     <h3 className='font-semibold text-sm'>Notifications</h3>
                   </div>
                   <div className='max-h-80 overflow-y-auto py-1 custom-scrollbar'>
                     {alerts.length === 0 ? (
-                      <p className='text-center text-xs py-4 text-slate-500 dark:text-slate-400'>No new notifications.</p>
+                      <p className='text-center text-xs py-4 text-white/70 dark:text-slate-400'>No new notifications.</p>
                     ) : (
                       alerts.slice(0, MAX_ALERTS_IN_DROPDOWN).map(alert => (
-                        <div key={alert.id} className={`px-3 py-2.5 border-b ${isDarkMode ? 'border-slate-700/50 hover:bg-slate-700/30' : 'border-slate-200/70 hover:bg-slate-50'} transition-colors`}>
+                        <div key={alert.id} className={`px-3 py-2.5 border-b ${isDarkMode ? 'border-slate-700/50 hover:bg-slate-700/30' : 'border-white/20 hover:bg-white/10'} transition-colors`}>
                           <div className='flex items-start space-x-2.5'>
                             <FaExclamationTriangle className={`mt-1 text-base shrink-0 ${isDarkMode ? 'text-yellow-400' : 'text-yellow-500'}`} />
                             <div>
                               <p className='text-xs leading-relaxed break-words'>{alert.message}</p>
-                              <p className={`text-[11px] mt-0.5 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>{formatTimestampToIST(alert.timestamp)}</p>
+                              <p className={`text-[11px] mt-0.5 ${isDarkMode ? 'text-slate-400' : 'text-white/70'}`}>{formatTimestampToIST(alert.timestamp)}</p>
                             </div>
                           </div>
                         </div>
@@ -296,7 +293,7 @@ const Layout = () => {
                   {alerts.length > MAX_ALERTS_IN_DROPDOWN && (
                     <Link
                       to='/dashboard/alerts' onClick={() => setIsNotificationDropdownOpen(false)}
-                      className={`block w-full text-center px-3 py-2.5 text-xs font-medium rounded-b-md ${isDarkMode ? 'bg-slate-700/50 hover:bg-slate-600/50 text-sky-400' : 'bg-slate-100 hover:bg-slate-200 text-sky-600'} transition-colors`}
+                      className={`block w-full text-center px-3 py-2.5 text-xs font-medium rounded-b-md ${isDarkMode ? 'bg-slate-700/50 hover:bg-slate-600/50 text-cyan-500' : 'bg-white/10 hover:bg-white/20 text-cyan-500'} transition-colors`}
                     >
                       Show All Notifications
                     </Link>
@@ -308,31 +305,31 @@ const Layout = () => {
             <div className='relative'>
               <button
                 onClick={() => { setIsUserDropdownOpen(!isUserDropdownOpen); setIsNotificationDropdownOpen(false); }}
-                className='flex items-center p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700'
+                className='flex items-center p-2 rounded-md hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white'
                 title='User Menu'
               >
-                <FaUserCircle className={`text-3xl ${isDarkMode ? 'text-sky-400' : 'text-sky-500'}`} />
+                <FaUserCircle className='text-2xl text-cyan-500' />
               </button>
               {isUserDropdownOpen && (
-                <div className={`absolute right-0 mt-2.5 w-72 rounded-lg shadow-xl p-2 z-50 border ${isDarkMode ? 'bg-slate-800 text-slate-200 border-slate-700' : 'bg-white text-slate-700 border-slate-200'}`}>
-                  <div className={`px-3 py-3 mb-1 rounded-md ${isDarkMode ? 'bg-slate-700/50' : 'bg-slate-50'}`}>
-                    <p className={`text-xs font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Signed in as</p>
-                    <p className='text-sm font-semibold break-all truncate'>{username || 'Loading...'}</p>
+                <div className={`absolute right-0 mt-2.5 w-72 rounded-lg shadow-xl p-2 z-50 border ${isDarkMode ? 'bg-black/90 border-slate-700 text-white' : 'bg-white/90 border-slate-200 text-slate-700'}`}>
+                  <div className={`px-3 py-3 mb-1 rounded-md ${isDarkMode ? 'bg-slate-700/50' : 'bg-white/10'}`}>
+                    <p className={`text-xs font-medium ${isDarkMode ? 'text-slate-400' : 'text-white/70'}`}>Signed in as</p>
+                    <p className='text-sm font-semibold break-all truncate text-cyan-500'>{username || 'Loading...'}</p>
                   </div>
                   <div className='space-y-0.5'>
                     <DropdownItem href='#'>Your Profile</DropdownItem>
                     <DropdownItem href='#'>Settings</DropdownItem>
                   </div>
-                  <div className={`my-2 py-2 border-y ${isDarkMode ? 'border-slate-700' : 'border-slate-200'}`}>
+                  <div className={`my-2 py-2 border-y ${isDarkMode ? 'border-slate-700' : 'border-white/20'}`}>
                     <div className='space-y-0.5 px-0'>
                       {csvDropdownPreparedData.length > 0 ? (
                         <CSVLink
                           data={csvDropdownPreparedData}
                           filename={`aquamonitor-data-${new Date().toISOString().split('T')[0]}.csv`}
-                          className={`group flex items-center w-full px-4 py-2.5 text-sm rounded-md transition-colors duration-150 ${isDarkMode ? 'text-slate-300 hover:bg-slate-700 hover:text-sky-300' : 'text-slate-700 hover:bg-slate-100 hover:text-sky-600'}`}
+                          className={`group flex items-center w-full px-4 py-2.5 text-sm rounded-md transition-colors duration-150 ${isDarkMode ? 'text-slate-300 hover:bg-slate-700 hover:text-cyan-500' : 'text-slate-700 hover:bg-white/10 hover:text-cyan-500'}`}
                           target='_self'
                         >
-                          <FaDownload className={`mr-3 text-base ${isDarkMode ? 'text-slate-400 group-hover:text-sky-300' : 'text-slate-500 group-hover:text-sky-600'}`} />
+                          <FaDownload className={`mr-3 text-base ${isDarkMode ? 'text-slate-400 group-hover:text-cyan-500' : 'text-white/70 group-hover:text-cyan-500'}`} />
                           Download CSV
                         </CSVLink>
                       ) : (
@@ -348,19 +345,19 @@ const Layout = () => {
                   </div>
                   <div className='px-3 py-2 text-xs'>
                     <div className='flex justify-between items-center'>
-                      <span className={`${isDarkMode ? 'text-slate-400' : 'text-slate-500'} font-medium`}>Access ID:</span>
+                      <span className={`${isDarkMode ? 'text-slate-400' : 'text-white/70'} font-medium`}>Access ID:</span>
                       {accessId && (
                         <button
                           onClick={handleCopyAccessId} title={isAccessIdCopied ? 'Copied!' : 'Copy Access ID'}
-                          className={`p-1 rounded-md transition-colors ${isAccessIdCopied ? (isDarkMode ? 'text-green-400' : 'text-green-500') : (isDarkMode ? 'text-slate-400 hover:text-sky-300' : 'text-slate-500 hover:text-sky-600')}`}
+                          className={`p-1 rounded-md transition-colors ${isAccessIdCopied ? (isDarkMode ? 'text-green-400' : 'text-green-500') : (isDarkMode ? 'text-slate-400 hover:text-cyan-500' : 'text-white/70 hover:text-cyan-500')}`}
                         >
                           {isAccessIdCopied ? <FaCheck className='h-3.5 w-3.5' /> : <FaCopy className='h-3.5 w-3.5' />}
                         </button>
                       )}
                     </div>
-                    <p className={`font-mono break-all mt-0.5 ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>{accessId || 'N/A'}</p>
+                    <p className={`font-mono break-all mt-0.5 ${isDarkMode ? 'text-slate-300' : 'text-white/70'}`}>{accessId || 'N/A'}</p>
                   </div>
-                  <div className={`mt-1 pt-2 border-t ${isDarkMode ? 'border-slate-700' : 'border-slate-200'}`}>
+                  <div className={`mt-1 pt-2 border-t ${isDarkMode ? 'border-slate-700' : 'border-white/20'}`}>
                     <DropdownItem
                       onClick={handleLogout} icon={FaSignOutAlt}
                       className={`${isDarkMode ? 'text-red-400 hover:bg-red-700/30 hover:text-red-300' : 'text-red-600 hover:bg-red-100 hover:text-red-700'}`}
@@ -373,7 +370,7 @@ const Layout = () => {
             </div>
           </div>
         </header>
-        <main className='p-6 flex-grow'>
+        <main className='p-6 flex-grow mt-20'>
           <Outlet context={{
             isDarkMode, formatTimestampToIST, alerts, username, accessId, setSensorDataForLayoutCSV
           }} />

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Login from './components/user/Login';
-import Layout from './components/user/Layout';
+import Layout from './components/user/layout/Layout';
 import DashboardHomePage from './components/user/DashboardHomePage';
 import Alerts from './components/user/Alerts';
 import AdminDashboard from './components/admin/AdminDashboard';
@@ -11,9 +11,11 @@ import DeviceDetailsPage from './components/admin/DeviceDetailPage/DeviceDetails
 import Records from './components/admin/DeviceDetailPage/Records';
 import Download from './components/admin/DeviceDetailPage/Download';
 import MoreDetails from './components/admin/DeviceDetailPage/MoreDetails';
-// import Realtime from './components/admin/DeviceDetailPage/Realtime';
+import Realtime from './components/admin/DeviceDetailPage/Realtime';
 import IntroPage from './components/Intro';
-import IoTGatewayHealthPage from './components/admin/DeviceDetailPage/IoTGatewayHealthPage'; 
+import IoTGatewayHealthPage from './components/admin/DeviceDetailPage/IoTGatewayHealthPage';
+import GatewayHealth from './components/user/GatewayHealth';
+import Analytics from './components/user/Analytics';
 
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
   const token = localStorage.getItem('token');
@@ -61,7 +63,7 @@ const App = () => {
         <Route path="/admin/device-detail/:deviceId" element={<ProtectedRoute requireAdmin={true}><DeviceDetailsPage /></ProtectedRoute>} />
         <Route path="/admin/device-detail/:deviceId/records" element={<ProtectedRoute requireAdmin={true}><Records /></ProtectedRoute>} />
         <Route path="/admin/device-detail/:deviceId/download-csv" element={<ProtectedRoute requireAdmin={true}><Download /></ProtectedRoute>} />
-        {/* <Route path="/admin/device-detail/:deviceId/realtime" element={<ProtectedRoute requireAdmin={true}><Realtime /></ProtectedRoute>} /> */}
+        <Route path="/admin/device-detail/:deviceId/realtime" element={<ProtectedRoute requireAdmin={true}><Realtime /></ProtectedRoute>} />
         <Route path="/admin/device-detail/:deviceId/more-details" element={<ProtectedRoute requireAdmin={true}><MoreDetails /></ProtectedRoute>} />
         <Route path="/admin/device-detail/:deviceId/health" element={<ProtectedRoute requireAdmin={true}><IoTGatewayHealthPage /></ProtectedRoute>} />
 
@@ -69,6 +71,8 @@ const App = () => {
         <Route element={<ProtectedRoute requireAdmin={false}><Layout /></ProtectedRoute>}>
           <Route path="/dashboard" element={<DashboardHomePage />} />
           <Route path="/dashboard/alerts" element={<Alerts />} />
+          <Route path="/dashboard/gateway-health" element={<GatewayHealth />} />
+          <Route path="/dashboard/analytics" element={<Analytics/>} />
         </Route>
       </Routes>
     </Router>

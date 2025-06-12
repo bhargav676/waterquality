@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import bg from '../../assets/images/bg7.jpeg';
+import bg from '../../assets/images/bg10.png';
 import { FaDroplet } from "react-icons/fa6";
 
 const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
@@ -35,7 +35,7 @@ const AddUser = ({ onClose }) => {
       setTimeout(() => {
         setSuccess(false);
         onClose();
-      }, 1500); // Show success message for 1.5 seconds before closing
+      }, 1500);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to add user');
       setLoading(false);
@@ -50,7 +50,6 @@ const AddUser = ({ onClose }) => {
       }}
     >
       <div className="bg-black/60 bg-opacity-95 shadow-lg rounded-xl p-6 w-full max-w-sm sm:max-w-md">
-        {/* Logo Placeholder with Droplet Icon */}
         <div className="flex justify-center mb-6">
           <div className="w-14 h-14 rounded-full flex items-center justify-center">
             <FaDroplet className='w-16 h-16 text-cyan-500 mt-20'/>

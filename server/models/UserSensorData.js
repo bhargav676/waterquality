@@ -36,7 +36,7 @@ const sensorDataSchema = new mongoose.Schema({
     default: null,
   },
   battery: {
-    type: Number, // % (0-100)
+    type: Number, // % (0-100) 
     default: null,
   },
    capacity: {
@@ -48,5 +48,6 @@ const sensorDataSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
 
 module.exports = mongoose.model('UserSensorData', sensorDataSchema);

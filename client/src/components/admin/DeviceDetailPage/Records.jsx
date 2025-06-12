@@ -4,6 +4,7 @@ import axios from 'axios';
 import Navbar from './Dnavbar';
 import bg from '../../../assets/images/bg9.png';
 import { toast } from 'react-toastify';
+import Loader from './Loader'; // Import the Loader component
 
 const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
 
@@ -89,7 +90,7 @@ const Records = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
-        Loading records...
+        <Loader />
       </div>
     );
   }
@@ -146,7 +147,7 @@ const Records = () => {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-balck">
+                <tr className="bg-black">
                   <th className="p-3 text-left text-white font-medium">Timestamp</th>
                   <th className="p-3 text-left text-white font-medium">pH</th>
                   <th className="p-3 text-left text-white font-medium">Turbidity (NTU)</th>

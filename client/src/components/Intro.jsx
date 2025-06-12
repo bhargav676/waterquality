@@ -18,12 +18,6 @@ const textVariants = {
   initial: { y: 50, opacity: 0, scale: 0.95 },
   animate: { y: 0, opacity: 1, scale: 1, transition: { duration: 1, ease: 'easeOut' } },
 };
-const spinnerVariants = {
-  animate: {
-    rotate: 360,
-    transition: { duration: 1.5, repeat: Infinity, ease: 'linear' },
-  },
-};
 const imageVariants = {
   initial: { x: '100%', opacity: 0 },
   animate: { x: 0, opacity: 1, transition: { duration: 0.5, ease: 'easeOut' } },
@@ -170,22 +164,6 @@ const IntroPage = () => {
         >  
           Ensuring clean and safe water for all
         </motion.p>
-        <motion.div
-          className="mt-8"
-          variants={textVariants}
-          initial="initial"
-          animate="animate"
-          transition={{ delay: 0.9 }}
-        >
-          <motion.div
-            className="w-8 h-8 border-4 border-t-white border-white/30 rounded-full mx-auto"
-            variants={spinnerVariants}
-            animate="animate"
-            role="status"
-            aria-label="Loading"
-          ></motion.div>
-          <p className="text-sm text-white/70 mt-2">Loading...</p>
-        </motion.div>
         <motion.button
           className="mt-8 px-8 py-3 bg-cyan-600 text-white font-semibold rounded-full hover:bg-cyan-700 active:scale-95 shadow-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
           variants={textVariants}

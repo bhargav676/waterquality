@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import Navbar from './Dnavbar';
 import bg from '../../../assets/images/bg9.png';
 import { toast } from 'react-toastify';
+import Loader from './Loader'; // Import the Loader component
 
 const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
 
@@ -153,7 +154,7 @@ const Download = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
-        Loading data...
+        <Loader />
       </div>
     );
   }
@@ -236,7 +237,7 @@ const Download = () => {
             <CSVLink
               data={csvData}
               filename={`device_data_${deviceId}_${format(new Date(), 'yyyyMMdd')}.csv`}
-              className="px-4 py-2 bg-cyan-500  text-white rounded-md hover:bg-cyan-600 transition-colors"
+              className="px-4 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 transition-colors"
             >
               Download Filtered CSV
             </CSVLink>

@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -203,8 +204,52 @@ router.post('/sensor', async (req, res) => {
 
 router.get('/sensor/data', authMiddleware, async (req, res) => {
   try {
-    const data = await UserSensorData.find({ userId: req.user.userId });
-    res.status(200).json(data);
+    const userId = req.user.userId;
+    const {
+      page = 1, // Default to page 1
+      limit = 50, // Default to 50 records per page
+      sort = 'desc', // Default to descending order
+      startDate, // Optional date range filter
+      endDate,
+      deviceId, // Optional device ID filter
+    } = req.query;
+
+    // Validate query parameters
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    if (isNaN(pageNum) || isNaN(limitNum) || pageNum < 1 || limitNum < 1) {
+      return res.status(400).json({ message: 'Invalid page or limit' });
+    }
+
+    // Build query
+    const query = { userId };
+    if (deviceId) query.deviceId = deviceId;
+    if (startDate || endDate) {
+      query.timestamp = {};
+      if (startDate) query.timestamp.$gte = new Date(startDate);
+      if (endDate) query.timestamp.$lte = new Date(endDate);
+    }
+
+    // Execute query with pagination and sorting
+    const data = await UserSensorData.find(query)
+      .select('ph turbidity tds latitude longitude temperature battery capacity deviceId timestamp') // Select only needed fields
+      .sort({ timestamp: sort === 'asc' ? 1 : -1 }) // Sort by timestamp
+      .skip((pageNum - 1) * limitNum) // Skip records for pagination
+      .limit(limitNum) // Limit records per page
+      .lean(); // Use lean() for faster queries by returning plain JS objects
+
+    // Get total count for pagination metadata
+    const totalRecords = await UserSensorData.countDocuments(query);
+
+    res.status(200).json({
+      data,
+      pagination: {
+        page: pageNum,
+        limit: limitNum,
+        totalRecords,
+        totalPages: Math.ceil(totalRecords / limitNum),
+      },
+    });
   } catch (err) {
     console.error('Error fetching sensor data:', err);
     res.status(500).json({ message: 'Server error: Unable to fetch sensor data' });
@@ -267,6 +312,79 @@ router.get('/users', authMiddleware, adminMiddleware, async (req, res) => {
     console.error('Error fetching users:', err);
     res.status(500).json({ message: 'Server error: Unable to fetch users' });
   } 
+});
+
+router.get('/alerts', authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    
+    // Fetch sensor data for the user
+    const sensorData = await UserSensorData.find({ userId }).sort({ timestamp: -1 });
+
+    const alerts = sensorData.reduce((acc, data) => {
+      const deviceAlerts = [];
+
+      if (data.ph != null && (data.ph < 6.5 || data.ph > 8.5)) {
+        deviceAlerts.push({
+          id: `${data._id}-ph`,
+          type: 'ph',
+          message: `High pH level detected: ${data.ph}`,
+          timestamp: data.timestamp,
+          deviceId: data.deviceId,
+        });
+      }
+
+      // Turbidity alert (example threshold: > 5 NTU)
+      if (data.turbidity != null && data.turbidity > 5) {
+        deviceAlerts.push({
+          id: `${data._id}-turbidity`,
+          type: 'turbidity',
+          message: `High turbidity level detected: ${data.turbidity} NTU`,
+          timestamp: data.timestamp,
+          deviceId: data.deviceId,
+        });
+      }
+
+      // TDS alert (example threshold: > 1000 ppm)
+      if (data.tds != null && data.tds > 1000) {
+        deviceAlerts.push({
+          id: `${data._id}-tds`,
+          type: 'tds',
+          message: `High TDS level detected: ${data.tds} ppm`,
+          timestamp: data.timestamp,
+          deviceId: data.deviceId,
+        });
+      }
+
+      return [...acc, ...deviceAlerts];
+    }, []);
+
+    res.status(200).json(alerts);
+  } catch (err) {
+    console.error('Error fetching alerts:', err);
+    res.status(500).json({ message: 'Server error: Unable to fetch alerts' });
+  }
+});
+
+
+router.get('/sensor/summary', authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const latestData = await UserSensorData.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      { $sort: { timestamp: -1 } },
+      { $group: {
+          _id: '$deviceId',
+          latest: { $first: '$$ROOT' },
+        },
+      },
+      { $replaceRoot: { newRoot: '$latest' } },
+    ]);
+    res.status(200).json(latestData);
+  } catch (err) {
+    console.error('Error fetching sensor summary:', err);
+    res.status(500).json({ message: 'Server error: Unable to fetch sensor summary' });
+  }
 });
 
 
