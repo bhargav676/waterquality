@@ -7,8 +7,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FaVial, FaSmog, FaTint } from 'react-icons/fa';
 import Navbar from './Dnavbar';
 
-const API_BASE_URL = 'http://localhost:5000/api';
-const socket = io('http://localhost:5000', {
+const API_BASE_URL = 'https://waterqualityserver.onrender.com/api';
+const socket = io('https://waterqualityserver.onrender.com', {
   reconnection: true,
   reconnectionAttempts: 5,
   reconnectionDelay: 1000, 

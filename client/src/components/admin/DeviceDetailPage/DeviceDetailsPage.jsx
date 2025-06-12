@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 import io from 'socket.io-client';
 import Loader from './Loader';
 
-// Lazy load only the Line chart
+
 const Line = lazy(() => import('react-chartjs-2').then(module => ({ default: module.Line })));
 
 // Error boundary fallback
